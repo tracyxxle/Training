@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Kiểm Tra Kiến Thức SVR Cicavit+ Crème HPPI</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        svr: {
+                            red: '#E30613',
+                            redhover: '#B8000B',
+                            dark: '#0F172A',
+                            gray: '#64748B',
+                            light: '#FAFAFA',
+                            border: '#E2E8F0'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FFFFFF;
+            color: #0F172A;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-svr-red selection:text-white antialiased bg-white">
+
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 py-3 px-4 sm:px-8 shadow-xs">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-svr-red text-white font-black text-xl tracking-tighter px-3 py-1 rounded">
+                    SVR
+                </div>
+                <div>
+                    <h1 class="text-xs sm:text-sm font-extrabold text-slate-900 uppercase tracking-wider">Laboratoire Dermatologique</h1>
+                    <p class="text-[11px] text-slate-500 font-medium">Kiểm Tra Kiến Thức • Team Office</p>
+                </div>
+            </div>
+
+            <!-- Timer / Report Modal Trigger -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div id="header-timer-box" class="hidden flex items-center bg-red-50 border border-svr-red/30 px-3 py-1.5 rounded-lg text-svr-red font-mono font-bold text-xs sm:text-sm">
+                    <i class="fa-solid fa-stopwatch mr-1.5 animate-pulse"></i>
+                    <span id="timer-display">10:00</span>
+                </div>
+                <button onclick="openReportModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3 py-2 rounded-lg font-semibold border border-slate-200 transition flex items-center">
+                    <i class="fa-solid fa-chart-line mr-1.5 text-svr-red"></i>
+                    <span>Báo cáo</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto w-full px-4 py-6 sm:py-10 flex-1 flex flex-col justify-center">
+
+        <!-- ================= MÀN HÌNH 1: TRANG CHỦ & ĐĂNG NHẬP ================= -->
+        <div id="view-login" class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden max-w-xl mx-auto w-full">
+            <div class="p-6 sm:p-8 text-center border-b border-slate-100 bg-slate-50/50">
+                <span class="inline-block bg-svr-red/10 text-svr-red text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-3">Đánh Giá Kiến Thức Sản Phẩm</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">SVR Cicavit+ Crème HPPI</h2>
+                <p class="text-xs text-slate-500 mt-2 font-medium">Thời gian giới hạn: 10 phút • Đúng 15 câu hỏi trắc nghiệm</p>
+            </div>
+
+            <!-- Form Thông Tin Thí Sinh -->
+            <div class="p-6 sm:p-8">
+                <form id="form-login" onsubmit="handleStartQuiz(event)" class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Họ và Tên <span class="text-svr-red">*</span></label>
+                        <div class="relative">
+                            <i class="fa-regular fa-user absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+                            <input type="text" id="input-name" required placeholder="Nhập họ và tên nhân viên..." class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-xl pl-10 pr-4 py-3 focus:bg-white focus:border-svr-red focus:ring-1 focus:ring-svr-red outline-none transition font-medium">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Bộ Phận / Team <span class="text-svr-red">*</span></label>
+                        <div class="relative">
+                            <i class="fa-solid fa-users absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+                            <select id="input-dept" required class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-xl pl-10 pr-4 py-3 focus:bg-white focus:border-svr-red focus:ring-1 focus:ring-svr-red outline-none transition font-medium">
+                                <option value="Office Team">Office Team</option>
+                                <option value="Trade Marketing">Trade Marketing</option>
+                                <option value="Brand Marketing">Brand Marketing</option>
+                                <option value="Sales / Kinh Doanh">Sales / Kinh Doanh</option>
+                                <option value="Khác">Bộ phận khác</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" class="w-full bg-svr-red hover:bg-svr-redhover text-white font-bold py-3.5 rounded-xl shadow transition flex items-center justify-center space-x-2 text-sm tracking-wide uppercase">
+                            <span>BẮT ĐẦU LÀM BÀI</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ================= MÀN HÌNH 2: BÀI TRẮC NGHIỆM ================= -->
+        <div id="view-quiz" class="hidden space-y-5">
+            <!-- Progress Bar & Info -->
+            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="w-full sm:w-auto flex items-center justify-between sm:justify-start space-x-3">
+                    <span id="quiz-user-tag" class="text-xs bg-slate-100 text-slate-800 px-3 py-1.5 rounded-lg font-bold border border-slate-200">--</span>
+                    <span id="question-indicator" class="text-xs font-bold text-svr-red uppercase tracking-wider bg-red-50 px-2.5 py-1 rounded border border-red-100">Câu 1 / 15</span>
+                </div>
+
+                <div class="w-full sm:w-56 space-y-1">
+                    <div class="flex justify-between text-[11px] font-bold text-slate-500">
+                        <span>Tiến độ bài làm</span>
+                        <span id="progress-text">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
+                        <div id="progress-bar" class="bg-svr-red h-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs relative">
+                <div class="mb-5">
+                    <span id="q-category" class="inline-block text-[11px] font-bold text-svr-red uppercase tracking-wider bg-red-50 px-2.5 py-1 rounded border border-red-100">PHẦN 1</span>
+                    <h2 id="q-text" class="text-base sm:text-lg font-bold text-slate-900 mt-2.5 leading-snug">---</h2>
+                </div>
+
+                <!-- Answer Options Grid -->
+                <div id="options-grid" class="space-y-3 mt-6">
+                    <!-- Dynamic Answer Options -->
+                </div>
+
+                <!-- Card Navigation Controls -->
+                <div class="mt-8 pt-5 border-t border-slate-100 flex items-center justify-between">
+                    <button id="btn-prev" onclick="handlePrevQuestion()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-4 py-2.5 rounded-xl font-bold border border-slate-200 transition disabled:opacity-40 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-chevron-left mr-1"></i> Câu trước
+                    </button>
+
+                    <button id="btn-next" onclick="handleNextQuestion()" class="bg-svr-red hover:bg-svr-redhover text-white text-xs px-6 py-2.5 rounded-xl font-bold shadow transition flex items-center space-x-1.5">
+                        <span id="btn-next-text">Câu tiếp theo</span>
+                        <i id="btn-next-icon" class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MÀN HÌNH 3: KẾT QUẢ VÀ BÁO CÁO CHI TIẾT ================= -->
+        <div id="view-result" class="hidden bg-white border border-slate-200 rounded-2xl p-6 sm:p-10 shadow-sm space-y-8">
+            <div class="text-center space-y-3">
+                <div class="inline-flex p-4 rounded-full bg-red-50 text-svr-red border border-red-100">
+                    <i class="fa-solid fa-award text-4xl"></i>
+                </div>
+                <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tight">KẾT QUẢ BÀI KIỂM TRA</h2>
+                <p class="text-xs text-slate-500 font-medium">SVR Cicavit+ Crème HPPI Knowledge Test</p>
+            </div>
+
+            <!-- Score Summary Dashboard -->
+            <div class="max-w-md mx-auto bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-200 pb-3 text-xs text-slate-600 font-medium">
+                    <div>Thí sinh: <strong id="res-user-name" class="text-slate-900">---</strong></div>
+                    <div>Team: <strong id="res-user-dept" class="text-slate-900">---</strong></div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-white p-3 rounded-xl border border-slate-200">
+                        <span class="block text-[10px] text-slate-500 font-bold uppercase">Điểm Số</span>
+                        <span id="res-score-text" class="text-2xl font-extrabold text-svr-red">0/15</span>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200">
+                        <span class="block text-[10px] text-slate-500 font-bold uppercase">Tỷ Lệ</span>
+                        <span id="res-percent-text" class="text-2xl font-extrabold text-slate-900">0%</span>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200">
+                        <span class="block text-[10px] text-slate-500 font-bold uppercase">Thời Gian</span>
+                        <span id="res-time-text" class="text-2xl font-extrabold text-slate-700">00:00</span>
+                    </div>
+                </div>
+
+                <div id="res-evaluation-badge" class="p-3 rounded-xl text-xs font-bold text-center">
+                    <!-- Rating Injected -->
+                </div>
+            </div>
+
+            <!-- Detailed Explanation Section -->
+            <div class="space-y-4">
+                <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider border-b pb-2">Chi Tiết Đáp Án & Giải Thích Kiến Thức</h3>
+                <div id="answers-explanation-container" class="space-y-3 custom-scrollbar max-h-96 overflow-y-auto pr-1">
+                    <!-- Explanations Injected -->
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 border-t">
+                <button onclick="exportAllReportCSV()" class="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-5 py-3 rounded-xl font-bold border border-slate-200 transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-file-excel text-emerald-600"></i>
+                    <span>Xuất File Báo Cáo CSV</span>
+                </button>
+                
+                <button onclick="location.reload()" class="w-full sm:w-auto bg-svr-red hover:bg-svr-redhover text-white text-xs px-6 py-3 rounded-xl font-bold transition flex items-center justify-center space-x-2 shadow">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Làm Bài Kiểm Tra Mới</span>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ================= MODAL REPORT LỊCH SỬ LÀM BÀI ================= -->
+    <div id="modal-report" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-4 sm:p-5 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-clipboard-check text-svr-red text-base"></i>
+                    <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Danh Sách Báo Cáo Thí Sinh Đã Kiểm Tra</h3>
+                </div>
+                <button onclick="closeReportModal()" class="text-slate-400 hover:text-slate-600 text-lg px-2">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-4 sm:p-5 flex-1 overflow-y-auto custom-scrollbar space-y-4">
+                <div class="flex justify-between items-center">
+                    <p class="text-xs text-slate-500">Lịch sử làm bài được lưu lại trên trình duyệt thiết bị này.</p>
+                    <button onclick="exportAllReportCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-file-excel"></i>
+                        <span>Xuất File Excel CSV</span>
+                    </button>
+                </div>
+
+                <div class="border border-slate-200 rounded-xl overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[10px]">
+                            <tr>
+                                <th class="p-3">Họ và Tên</th>
+                                <th class="p-3">Bộ Phận</th>
+                                <th class="p-3 text-center">Điểm Số</th>
+                                <th class="p-3 text-center">Tỷ Lệ</th>
+                                <th class="p-3 text-right">Thời Gian</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-table-body" class="divide-y divide-slate-100 font-medium">
+                            <!-- Rows injected -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center">
+                <button onclick="clearAllReports()" class="text-xs text-red-600 hover:text-red-700 font-semibold flex items-center">
+                    <i class="fa-regular fa-trash-can mr-1"></i> Xóa dữ liệu
+                </button>
+                <button onclick="closeReportModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs px-4 py-2 rounded-lg font-bold">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Footer -->
+    <footer class="py-4 text-center text-xs text-slate-400 border-t border-slate-200 bg-white">
+        <p>© 2026 SVR Laboratoire Dermatologique • Internal Training Program</p>
+    </footer>
+
+    <script>
+        // BỘ 15 CÂU HỎI TIẾNG VIỆT 100% CẤU TRÚC ĐÚNG 3 PHẦN THEO YÊU CẦU
+        const QUIZ_BANK = [
+            // ================= PHẦN 1: CÂU 1 -> 5: KIẾN THỨC DA TỔN THƯƠNG & PHỤC HỒI =================
+            {
+                id: 1,
+                category: "PHẦN 1: KIẾN THỨC DA TỔN THƯƠNG & PHỤC HỒI",
+                question: "Dấu hiệu điển hình nào dưới đây cho thấy làn da đang rơi vào tình trạng bị tổn thương nhẹ (sau nặn mụn, peel da nhẹ, đi nắng)?",
+                options: [
+                    "A. Tăng tiết nhiều dầu nhờn nhưng không đỏ rát",
+                    "B. Bề mặt da khô căng, ửng đỏ, cảm giác rát châm chít hoặc bong tróc nhẹ",
+                    "C. Xuất hiện các vết tàn nhang và nám sâu đột ngột",
+                    "D. Da xuất hiện mụn bọc sưng mủ dầy đặc"
+                ],
+                correct: 1,
+                explanation: "Khi da bị tổn thương nhẹ, hàng rào bảo vệ da bị suy yếu khiến da mất nước, dẫn đến triệu chứng khô căng, ửng đỏ, châm chít và bong tróc nhẹ."
+            },
+            {
+                id: 2,
+                category: "PHẦN 1: KIẾN THỨC DA TỔN THƯƠNG & PHỤC HỒI",
+                question: "Quá trình lành vết thương của da diễn ra trải qua bao nhiêu giai đoạn chính?",
+                options: [
+                    "A. 1 giai đoạn duy nhất",
+                    "B. 2 giai đoạn (Tăng sinh và Lão hóa)",
+                    "C. 3 giai đoạn (Giai đoạn viêm -> Giai đoạn phục hồi -> Giai đoạn tái tạo ngừa thâm)",
+                    "D. 4 giai đoạn độc lập"
+                ],
+                correct: 2,
+                explanation: "Quá trình lành thương sinh lý gồm 3 giai đoạn: Inflammatory Phase (Viêm) -> Repair Phase (Phục hồi) -> Remodeling Phase (Tái tạo & ngừa thâm)."
+            },
+            {
+                id: 3,
+                category: "PHẦN 1: KIẾN THỨC DA TỔN THƯƠNG & PHỤC HỒI",
+                question: "Tại sao trong quá trình da đang hình thành da non (kéo da non), chúng ta thường có cảm giác ngứa rát nhẹ?",
+                options: [
+                    "A. Do các tế bào da mới đang tích cực tăng sinh, nối liền vết thương và tái thiết lập rào cản bảo vệ",
+                    "B. Do da bị nhiễm vi khuẩn nghiêm trọng",
+                    "C. Do thiếu hụt lượng Collagen toàn phần",
+                    "D. Do phản ứng dị ứng với môi trường xung quanh"
+                ],
+                correct: 0,
+                explanation: "Phản ứng ngứa nhẹ khi kéo da non là biểu hiện sinh lý bình thường do tế bào mới tăng sinh và tái tạo liên kết mua mô."
+            },
+            {
+                id: 4,
+                category: "PHẦN 1: KIẾN THỨC DA TỔN THƯƠNG & PHỤC HỒI",
+                question: "Vết thâm đỏ / thâm nâu sau mụn hoặc sau tổn thương da (PIH - Tăng sắc tố sau viêm) hình thành chủ yếu do đâu?",
+                options: [
+                    "A. Sự phản ứng quá mức của tế bào hắc tố Melanin do các kích thích từ phản ứng viêm tại chỗ",
+                    "B. Tăng tiết mồ hôi và bã nhờn",
+                    "C. Tế bào da bị mất khả năng sản xuất Lipid",
+                    "D. Do tiếp xúc quá nhiều với ánh sáng màn hình điện thoại"
+                ],
+                correct: 0,
+                explanation: "Tăng sắc tố sau viêm (PIH) xảy ra do phản ứng viêm kích thích tế bào Melanocyte sản sinh quá mức hắc tố Melanin đọng lại trên da."
+            },
+            {
+                id: 5,
+                category: "PHẦN 1: KIẾN THỨC DA TỔN THƯƠNG & PHỤC HỒI",
+                question: "Thời điểm 'vàng' tốt nhất để sử dụng sản phẩm phục hồi ngừa thâm mụn là khi nào?",
+                options: [
+                    "A. Chờ 1 - 2 tháng sau khi vết thâm đã chuyển sang màu đen sẫm",
+                    "B. Ngay khi vết thương vừa mới khép miệng hoặc ngay sau khi thực hiện các thủ thuật da liễu nhẹ",
+                    "C. Chỉ thoa khi vết thương bắt đầu chảy dịch",
+                    "D. Đợi đến khi da bong tróc hoàn toàn sau 1 tháng"
+                ],
+                correct: 1,
+                explanation: "Thoa kem phục hồi ngay khi vết thương khép miệng sẽ can thiệp kịp thời vào giai đoạn viêm và phục hồi, ngăn ngừa tối đa hình thành vết thâm đỏ và nâu."
+            },
+
+            // ================= PHẦN 2: CÂU 6 -> 10: CHỈ ĐỊNH SẢN PHẨM & THÀNH PHẦN CHÍNH =================
+            {
+                id: 6,
+                category: "PHẦN 2: CHỈ ĐỊNH SẢN PHẨM & THÀNH PHẦN CHÍNH",
+                question: "SVR Cicavit+ Crème HPPI đáp ứng bao nhiêu chỉ định chăm sóc phục hồi da cốt lõi (Core Indications)?",
+                options: [
+                    "A. 2 chỉ định",
+                    "B. 3 chỉ định",
+                    "C. 5 chỉ định cốt lõi",
+                    "D. 7 chỉ định"
+                ],
+                correct: 2,
+                explanation: "SVR Cicavit+ Crème HPPI được thiết kế cho 5 chỉ định cốt lõi: Phục hồi sau mụn, Sau thủ thuật thẩm mỹ, Da khô/hàng rào tổn thương, Da nhạy cảm/kích ứng, và Tổn thương da hằng ngày."
+            },
+            {
+                id: 7,
+                category: "PHẦN 2: CHỈ ĐỊNH SẢN PHẨM & THÀNH PHẦN CHÍNH",
+                question: "Hai nhóm chỉ định được SVR đặt làm ưu tiên hàng đầu (Priority Repair Indications) cho dòng sản phẩm này là gì?",
+                options: [
+                    "A. Chăm sóc da sau mụn (Post-acne) và Phục hồi sau thủ thuật thẩm mỹ da liễu (Laser, Peel, Nặn mụn, IPL)",
+                    "B. Chống nắng và Tẩy trang hằng ngày",
+                    "C. Trị mụn trứng cá nặng và Làm trắng da bật tông",
+                    "D. Tẩy tế bào chết hóa học và Kiềm dầu"
+                ],
+                correct: 0,
+                explanation: "Chăm sóc da Sau Mụn (Post-Acne Care) và Sau Thủ Thuật Thẩm Mỹ (Post-Aesthetic Procedures) là 2 chỉ định ưu tiên số 1 của sản phẩm."
+            },
+            {
+                id: 8,
+                category: "PHẦN 2: CHỈ ĐỊNH SẢN PHẨM & THÀNH PHẦN CHÍNH",
+                question: "Bộ 3 'thành phần vàng' tạo nên sức mạnh phục hồi và ngừa thâm mụn tối ưu của SVR Cicavit+ Crème HPPI gồm những gì?",
+                options: [
+                    "A. Retinol + AHA + Glycolic Acid",
+                    "B. Dẫn xuất nghệ (Turmeric derivative) + Marine Postbiotic + Niacinamide 2%",
+                    "C. Vitamin C + Salicylic Acid + BHA",
+                    "D. Hyaluronic Acid + Alcohol + Paraben"
+                ],
+                correct: 1,
+                explanation: "Bộ 3 công thức đột phá gồm: Dẫn xuất nghệ (Turmeric derivative) + Marine Postbiotic + Niacinamide 2% kết hợp cùng Hyaluronic Acid."
+            },
+            {
+                id: 9,
+                category: "PHẦN 2: CHỈ ĐỊNH SẢN PHẨM & THÀNH PHẦN CHÍNH",
+                question: "Độ an toàn của SVR Cicavit+ Crème HPPI phù hợp cho những đối tượng sử dụng nào?",
+                options: [
+                    "A. Chỉ dùng cho người trưởng thành từ 18 tuổi",
+                    "B. Cả gia đình: Trẻ sơ sinh, trẻ nhỏ, người lớn, phụ nữ mang thai (dùng cho Mặt, Body, Môi & Vùng niêm mạc)",
+                    "C. Chỉ dành riêng cho phụ nữ",
+                    "D. Chỉ dành cho da dầu nam giới"
+                ],
+                correct: 1,
+                explanation: "Sản phẩm đạt độ an toàn tuyệt đối, dùng được cho toàn bộ gia đình kể cả trẻ sơ sinh và phụ nữ mang thai, thích hợp cho mặt, body và niêm mạc."
+            },
+            {
+                id: 10,
+                category: "PHẦN 2: CHỈ ĐỊNH SẢN PHẨM & THÀNH PHẦN CHÍNH",
+                question: "Chứng nhận 'Tested Endocrine Disruptors' được in trên bao bì SVR Cicavit+ Crème HPPI chứng minh điều gì?",
+                options: [
+                    "A. Sản phẩm có khả năng chống nắng SPF50+",
+                    "B. Sản phẩm đã được kiểm nghiệm không chứa các chất gây rối loạn nội tiết",
+                    "C. Sản phẩm chỉ sử dụng theo đơn thuốc bác sĩ",
+                    "D. Sản phẩm chứa các chất bảo quản tổng hợp"
+                ],
+                correct: 1,
+                explanation: "Chứng nhận Tested Endocrine Disruptors đảm bảo sản phẩm an toàn, không chứa các thành phần có nguy cơ gây rối loạn nội tiết tố."
+            },
+
+            // ================= PHẦN 3: CÂU 11 -> 15: CÁC THÀNH PHẦN HIỆU QUẢ VÀ CÔNG DỤNG SẢN PHẨM =================
+            {
+                id: 11,
+                category: "PHẦN 3: CÁC THÀNH PHẦN HIỆU QUẢ & CÔNG DỤNG SẢN PHẨM",
+                question: "Thành phần 'Dẫn xuất nghệ' (Turmeric derivative) đóng vai trò chính nào ở giai đoạn đầu tiên của lành thương?",
+                options: [
+                    "A. Kháng viêm, làm dịu tức thì cảm giác ửng đỏ, rát da và hỗ trợ ngăn ngừa vết thâm",
+                    "B. Tạo lớp màng kháng nước cứng cáp",
+                    "C. Tẩy tế bào chết bề mặt",
+                    "D. Làm hương liệu tự nhiên"
+                ],
+                correct: 0,
+                explanation: "Dẫn xuất nghệ có đặc tính chống viêm (Anti-inflammatory) mạnh mẽ, làm dịu nhanh mẩn đỏ và ngăn chặn tạo vết thâm đỏ."
+            },
+            {
+                id: 12,
+                category: "PHẦN 3: CÁC THÀNH PHẦN HIỆU QUẢ & CÔNG DỤNG SẢN PHẨM",
+                question: "Thành phần 'Marine Postbiotic' có công dụng nổi bật gì trong việc ngừa thâm và cân bằng da?",
+                options: [
+                    "A. Giúp cân bằng hệ vi sinh trên da và ngăn ngừa, làm mờ các vết thâm nâu (Brown marks)",
+                    "B. Giúp làm da đổ dầu nhiều hơn",
+                    "C. Làm bào mòn lớp sừng trên bề mặt",
+                    "D. Thay thế kem chống nắng"
+                ],
+                correct: 0,
+                explanation: "Marine Postbiotic tác động vào giai đoạn tái tạo cuối cùng (Remodeling Phase), ngăn ngừa và sửa chữa vết thâm nâu đồng thời cân bằng hệ vi sinh da."
+            },
+            {
+                id: 13,
+                category: "PHẦN 3: CÁC THÀNH PHẦN HIỆU QUẢ & CÔNG DỤNG SẢN PHẨM",
+                question: "SVR Cicavit+ Crème HPPI được kiểm nghiệm giúp LÀM DỊU da tổn thương trong thời gian bao lâu?",
+                options: [
+                    "A. Làm dịu trong 5 giây",
+                    "B. Làm dịu sau 5 phút",
+                    "C. Làm dịu sau 1 giờ",
+                    "D. Làm dịu sau 1 ngày"
+                ],
+                correct: 0,
+                explanation: "Theo kết quả kiểm nghiệm lâm sàng, SVR Cicavit+ Crème HPPI cho hiệu quả làm dịu da (Soothes the skin) ngay tức thì trong 5 giây."
+            },
+            {
+                id: 14,
+                category: "PHẦN 3: CÁC THÀNH PHẦN HIỆU QUẢ & CÔNG DỤNG SẢN PHẨM",
+                question: "Theo dữ liệu lâm sàng, sản phẩm giúp GIẢM VẾT THÂM ĐỎ & THÂM NÂU rõ rệt trong thời gian bao lâu?",
+                options: [
+                    "A. Trong 3 ngày",
+                    "B. Trong 7 ngày",
+                    "C. Trong 30 ngày",
+                    "D. Trong 60 ngày"
+                ],
+                correct: 1,
+                explanation: "SVR Cicavit+ Crème HPPI đã chứng minh hiệu quả giảm thiểu các vết thâm đỏ và vết thâm nâu rõ rệt chỉ trong 7 ngày sử dụng (Reduces brown & red mark in 7 days)."
+            },
+            {
+                id: 15,
+                category: "PHẦN 3: CÁC THÀNH PHẦN HIỆU QUẢ & CÔNG DỤNG SẢN PHẨM",
+                question: "SVR Cicavit+ Crème HPPI có bao nhiêu % thành phần từ nguồn gốc tự nhiên và tốc độ phục hồi gấp mấy lần so với tự nhiên?",
+                options: [
+                    "A. 80% nguồn gốc tự nhiên & Phục hồi gấp 2 lần",
+                    "B. 94% nguồn gốc tự nhiên & Phục hồi gấp 7 lần",
+                    "C. 90% nguồn gốc tự nhiên & Phục hồi gấp 4 lần",
+                    "D. 100% nguồn gốc tự nhiên & Phục hồi gấp 10 lần"
+                ],
+                correct: 1,
+                explanation: "Sản phẩm chứa 94% thành phần nguồn gốc thiên nhiên (94% Natural origin ingredients) và được chứng minh giúp tăng tốc độ phục hồi da gấp 7 lần."
+            }
+        ];
+
+        let currentUser = { name: "", dept: "" };
+        let currentQuestionIdx = 0;
+        let userAnswers = new Array(QUIZ_BANK.length).fill(null);
+        let timerSeconds = 600; // 10 phút
+        let timerInterval = null;
+
+        // Bắt đầu bài test
+        function handleStartQuiz(e) {
+            e.preventDefault();
+            const name = document.getElementById("input-name").value.trim();
+            const dept = document.getElementById("input-dept").value;
+
+            if (!name) {
+                alert("Vui lòng nhập đầy đủ Họ và Tên!");
+                return;
+            }
+
+            currentUser = { name, dept };
+            document.getElementById("quiz-user-tag").innerText = `${name} • ${dept}`;
+
+            // Switch views
+            document.getElementById("view-login").classList.add("hidden");
+            document.getElementById("view-quiz").classList.remove("hidden");
+            document.getElementById("header-timer-box").classList.remove("hidden");
+
+            startTimer();
+            renderQuestion();
+        }
+
+        // Timer Logic
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                updateTimerDisplay();
+
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Đã hết thời gian 10 phút làm bài! Hệ thống tự động nộp bài.");
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timerSeconds / 60);
+            const s = timerSeconds % 60;
+            const str = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            document.getElementById("timer-display").innerText = str;
+        }
+
+        function renderQuestion() {
+            const q = QUIZ_BANK[currentQuestionIdx];
+
+            // Progress Update
+            document.getElementById("question-indicator").innerText = `Câu ${currentQuestionIdx + 1} / ${QUIZ_BANK.length}`;
+            const pct = Math.round(((currentQuestionIdx + 1) / QUIZ_BANK.length) * 100);
+            document.getElementById("progress-bar").style.width = `${pct}%`;
+            document.getElementById("progress-text").innerText = `${pct}%`;
+
+            // Category & Question Text
+            document.getElementById("q-category").innerText = q.category;
+            document.getElementById("q-text").innerText = q.question;
+
+            // Render Options
+            const container = document.getElementById("options-grid");
+            container.innerHTML = "";
+
+            q.options.forEach((optText, optIdx) => {
+                const isSelected = userAnswers[currentQuestionIdx] === optIdx;
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.onclick = () => selectOption(optIdx);
+
+                btn.className = `w-full text-left p-4 rounded-xl border transition flex items-center space-x-3 text-xs sm:text-sm font-semibold ${
+                    isSelected 
+                        ? 'bg-red-50/80 border-svr-red text-svr-red ring-1 ring-svr-red' 
+                        : 'bg-slate-50/60 border-slate-200 text-slate-800 hover:bg-slate-100 hover:border-slate-300'
+                }`;
+
+                btn.innerHTML = `
+                    <span class="w-6 h-6 rounded-full border flex items-center justify-center text-xs shrink-0 font-bold ${
+                        isSelected ? 'bg-svr-red text-white border-svr-red' : 'border-slate-300 bg-white text-slate-500'
+                    }">${String.fromCharCode(65 + optIdx)}</span>
+                    <span class="flex-1 leading-snug">${optText}</span>
+                `;
+
+                container.appendChild(btn);
+            });
+
+            // Controls update
+            document.getElementById("btn-prev").disabled = (currentQuestionIdx === 0);
+            const nextBtnText = document.getElementById("btn-next-text");
+            const nextBtnIcon = document.getElementById("btn-next-icon");
+            
+            if (currentQuestionIdx === QUIZ_BANK.length - 1) {
+                nextBtnText.innerText = "HOÀN THÀNH & NỘP BÀI";
+                nextBtnIcon.className = "fa-solid fa-check text-xs";
+            } else {
+                nextBtnText.innerText = "Câu Tiếp Theo";
+                nextBtnIcon.className = "fa-solid fa-chevron-right text-xs";
+            }
+        }
+
+        function selectOption(optIdx) {
+            userAnswers[currentQuestionIdx] = optIdx;
+            renderQuestion();
+        }
+
+        function handlePrevQuestion() {
+            if (currentQuestionIdx > 0) {
+                currentQuestionIdx--;
+                renderQuestion();
+            }
+        }
+
+        function handleNextQuestion() {
+            if (userAnswers[currentQuestionIdx] === null) {
+                alert("Vui lòng chọn 1 đáp án trước khi tiếp tục!");
+                return;
+            }
+
+            if (currentQuestionIdx < QUIZ_BANK.length - 1) {
+                currentQuestionIdx++;
+                renderQuestion();
+            } else {
+                const unanswered = userAnswers.filter(a => a === null).length;
+                if (unanswered > 0) {
+                    if (!confirm(`Bạn còn ${unanswered} câu chưa chọn đáp án. Bạn có muốn NỘP BÀI ngay không?`)) {
+                        return;
+                    }
+                } else {
+                    if (!confirm("Bạn có chắc chắn muốn NỘP BÀI kiểm tra?")) {
+                        return;
+                    }
+                }
+                submitQuiz();
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+
+            let correctCount = 0;
+            QUIZ_BANK.forEach((q, idx) => {
+                if (userAnswers[idx] === q.correct) {
+                    correctCount++;
+                }
+            });
+
+            const totalTimeSpentSec = 600 - timerSeconds;
+            const timeFormatted = `${Math.floor(totalTimeSpentSec / 60)} phút ${totalTimeSpentSec % 60} giây`;
+            const scorePercent = Math.round((correctCount / QUIZ_BANK.length) * 100);
+
+            // Save Local Storage
+            const record = {
+                name: currentUser.name,
+                dept: currentUser.dept,
+                score: correctCount,
+                total: QUIZ_BANK.length,
+                percent: scorePercent,
+                timeSpent: timeFormatted,
+                completedAt: new Date().toLocaleString("vi-VN")
+            };
+
+            saveReportRecord(record);
+
+            // View Transition
+            document.getElementById("view-quiz").classList.add("hidden");
+            document.getElementById("header-timer-box").classList.add("hidden");
+            document.getElementById("view-result").classList.remove("hidden");
+
+            // Render Results Info
+            document.getElementById("res-user-name").innerText = currentUser.name;
+            document.getElementById("res-user-dept").innerText = currentUser.dept;
+            document.getElementById("res-score-text").innerText = `${correctCount}/${QUIZ_BANK.length}`;
+            document.getElementById("res-percent-text").innerText = `${scorePercent}%`;
+            document.getElementById("res-time-text").innerText = `${Math.floor(totalTimeSpentSec / 60)}:${(totalTimeSpentSec % 60).toString().padStart(2, '0')}`;
+
+            const badge = document.getElementById("res-evaluation-badge");
+            if (scorePercent >= 80) {
+                badge.className = "p-3 rounded-xl text-xs font-bold text-center bg-emerald-50 text-emerald-800 border border-emerald-200";
+                badge.innerHTML = '<i class="fa-solid fa-circle-check mr-1.5"></i> ĐẠT YÊU CẦU XUẤT SẮC! Bạn nắm rất vững kiến thức SVR Cicavit+ Crème HPPI.';
+            } else if (scorePercent >= 60) {
+                badge.className = "p-3 rounded-xl text-xs font-bold text-center bg-amber-50 text-amber-800 border border-amber-200";
+                badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> ĐẠT YÊU CẦU. Hãy xem lại chi tiết giải thích bên dưới để hoàn thiện hơn!';
+            } else {
+                badge.className = "p-3 rounded-xl text-xs font-bold text-center bg-red-50 text-red-800 border border-red-200";
+                badge.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1.5"></i> CHƯA ĐẠT. Vui lòng tham khảo kĩ phần giải thích để chuẩn bị lại!';
+            }
+
+            renderExplanations();
+        }
+
+        function renderExplanations() {
+            const container = document.getElementById("answers-explanation-container");
+            container.innerHTML = "";
+
+            QUIZ_BANK.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = (userAns === q.correct);
+
+                const item = document.createElement("div");
+                item.className = `p-4 rounded-xl border text-xs space-y-2 ${
+                    isCorrect ? 'bg-emerald-50/40 border-emerald-200' : 'bg-red-50/40 border-red-200'
+                }`;
+
+                item.innerHTML = `
+                    <div class="flex items-start justify-between gap-2">
+                        <span class="font-bold ${isCorrect ? 'text-emerald-800' : 'text-red-800'}">
+                            Câu ${idx + 1}: ${q.question}
+                        </span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-extrabold shrink-0 uppercase ${
+                            isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
+                        }">
+                            ${isCorrect ? 'Đúng' : 'Sai'}
+                        </span>
+                    </div>
+
+                    <div class="space-y-1 font-medium text-slate-700">
+                        <p><strong>Đáp án bạn chọn:</strong> ${userAns !== null ? q.options[userAns] : 'Chưa chọn'}</p>
+                        ${!isCorrect ? `<p class="text-emerald-700"><strong>Đáp án đúng:</strong> ${q.options[q.correct]}</p>` : ''}
+                    </div>
+
+                    <div class="bg-white p-2.5 rounded-lg border border-slate-200 text-slate-600 font-normal">
+                        <strong class="text-slate-800">Giải thích:</strong> ${q.explanation}
+                    </div>
+                `;
+
+                container.appendChild(item);
+            });
+        }
+
+        function saveReportRecord(record) {
+            let reports = JSON.parse(localStorage.getItem("SVR_CICAVIT_OFFICE_REPORTS") || "[]");
+            reports.unshift(record);
+            localStorage.setItem("SVR_CICAVIT_OFFICE_REPORTS", JSON.stringify(reports));
+        }
+
+        function openReportModal() {
+            renderReportTable();
+            document.getElementById("modal-report").classList.remove("hidden");
+        }
+
+        function closeReportModal() {
+            document.getElementById("modal-report").classList.add("hidden");
+        }
+
+        function renderReportTable() {
+            const reports = JSON.parse(localStorage.getItem("SVR_CICAVIT_OFFICE_REPORTS") || "[]");
+            const tbody = document.getElementById("report-table-body");
+            tbody.innerHTML = "";
+
+            if (reports.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Chưa có bài làm nào được lưu lại.</td></tr>`;
+                return;
+            }
+
+            reports.forEach(r => {
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-900">${r.name}</td>
+                    <td class="p-3 text-slate-600">${r.dept}</td>
+                    <td class="p-3 text-center font-extrabold text-svr-red">${r.score}/${r.total}</td>
+                    <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${r.percent >= 80 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${r.percent}%</span></td>
+                    <td class="p-3 text-right text-slate-500 text-[11px]">${r.timeSpent}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function exportAllReportCSV() {
+            const reports = JSON.parse(localStorage.getItem("SVR_CICAVIT_OFFICE_REPORTS") || "[]");
+            if (reports.length === 0) {
+                alert("Chưa có dữ liệu để xuất file báo cáo!");
+                return;
+            }
+
+            let csvContent = "\uFEFF"; // UTF-8 BOM
+            csvContent += "Họ và Tên,Bộ Phận,Điểm Số,Tỷ Lệ (%),Thời Gian Làm Bài,Ngày Hoàn Thành\n";
+
+            reports.forEach(r => {
+                csvContent += `"${r.name}","${r.dept}","${r.score}/${r.total}","${r.percent}%","${r.timeSpent}","${r.completedAt}"\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Bao_Cao_SVR_Cicavit_Office_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function clearAllReports() {
+            if (confirm("Bạn có chắc chắn muốn xóa toàn bộ danh sách báo cáo trên thiết bị này?")) {
+                localStorage.removeItem("SVR_CICAVIT_OFFICE_REPORTS");
+                renderReportTable();
+            }
+        }
+    </script>
+</body>
+</html>
